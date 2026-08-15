@@ -1,12 +1,144 @@
-const CART_KEY="pearl_cart_v2";
-const getCart=()=>{try{return JSON.parse(localStorage.getItem(CART_KEY))||[]}catch(e){return[]}};
-function saveCart(c){localStorage.setItem(CART_KEY,JSON.stringify(c));updateCartCount()}
-function addToCart(id,quantity=1,size="",color=""){const p=getProduct(id);if(!p)return;const c=getCart(),key=`${id}|${size||p.sizes[0]}|${color||p.colors[0]}`,x=c.find(i=>i.key===key);if(x)x.quantity+=quantity;else c.push({key,id,quantity,size:size||p.sizes[0],color:color||p.colors[0]});saveCart(c);toast("Article ajouté au panier")}
-function removeFromCart(key){saveCart(getCart().filter(x=>x.key!==key));renderCart()}
-function changeQuantity(key,d){const c=getCart(),x=c.find(i=>i.key===key);if(!x)return;x.quantity+=d;if(x.quantity<1)return removeFromCart(key);saveCart(c);renderCart()}
-function details(){return getCart().map(x=>({...x,product:getProduct(x.id)})).filter(x=>x.product)}
-function subtotal(){return details().reduce((s,x)=>s+x.product.price*x.quantity,0)}
-function updateCartCount(){document.querySelectorAll("[data-cart-count]").forEach(e=>e.textContent=getCart().reduce((s,x)=>s+x.quantity,0))}
-function toast(t){let e=document.querySelector(".toast");if(!e){e=document.createElement("div");e.className="toast";e.style.cssText="position:fixed;right:20px;bottom:20px;background:#171513;color:#fff;padding:14px 18px;z-index:99";document.body.appendChild(e)}e.textContent=t;e.style.display="block";clearTimeout(window._t);window._t=setTimeout(()=>e.style.display="none",2000)}
-function renderCart(){const b=document.querySelector("[data-cart-items]"),s=document.querySelector("[data-cart-summary]");if(!b)return;const a=details();if(!a.length){b.innerHTML='<div class="empty"><h2>Votre panier est vide</h2><p>Découvrez la sélection PEARL.</p><a class="btn" href="boutique.html">Découvrir la boutique</a></div>';if(s)s.innerHTML="";return}b.innerHTML=a.map(x=>`<div class="cart-item"><div class="cart-thumb"><img src="${x.product.image}" alt="${x.product.name}"></div><div><div class="product-meta">${x.product.category}</div><h3>${x.product.name}</h3><small>${x.size} · ${x.color}</small><div class="quantity" style="margin-top:9px"><button onclick="changeQuantity('${x.key}',-1)">−</button><span>${x.quantity}</span><button onclick="changeQuantity('${x.key}',1)">+</button></div></div><div><strong>${formatPrice(x.product.price*x.quantity)}</strong><br><button class="filter" onclick="removeFromCart('${x.key}')">Supprimer</button></div></div>`).join("");if(s)s.innerHTML=`<h3>Résumé</h3><div class="summary-line"><span>Sous-total</span><strong>${formatPrice(subtotal())}</strong></div><div class="summary-line"><span>Livraison</span><span>À confirmer</span></div><div class="summary-line total"><span>Total</span><span>${formatPrice(subtotal())}</span></div><a class="btn gold" style="width:100%;margin-top:12px" href="contact.html?checkout=1">Commander</a>`}
-document.addEventListener("DOMContentLoaded",()=>{updateCartCount();renderCart()});
+const CART_KEY = "pearl_cart_v3";
+
+function getCart(){
+  try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
+  catch(error){ return []; }
+}
+
+function saveCart(cart){
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  updateCartCount();
+}
+
+function cartDetails(){
+  return getCart()
+    .map(item => ({...item, product:getProduct(item.id)}))
+    .filter(item => item.product);
+}
+
+function cartSubtotal(){
+  return cartDetails().reduce((total,item) => total + item.product.price * item.quantity, 0);
+}
+
+function addToCart(id, quantity=1, size="", color=""){
+  const product = getProduct(id);
+  if(!product) return;
+
+  const selectedSize = size || product.sizes[0];
+  const selectedColor = color || product.colors[0];
+  const key = `${id}|${selectedSize}|${selectedColor}`;
+  const cart = getCart();
+  const existing = cart.find(item => item.key === key);
+
+  if(existing) existing.quantity += quantity;
+  else cart.push({key,id,quantity,size:selectedSize,color:selectedColor});
+
+  saveCart(cart);
+  showToast(`${product.name} a été ajouté au panier.`);
+}
+
+function removeFromCart(key){
+  saveCart(getCart().filter(item => item.key !== key));
+  renderCart();
+}
+
+function changeQuantity(key, delta){
+  const cart = getCart();
+  const item = cart.find(row => row.key === key);
+  if(!item) return;
+  item.quantity += delta;
+  if(item.quantity <= 0){
+    removeFromCart(key);
+    return;
+  }
+  saveCart(cart);
+  renderCart();
+}
+
+function updateCartCount(){
+  const count = getCart().reduce((sum,item) => sum + Number(item.quantity || 0), 0);
+  document.querySelectorAll("[data-cart-count]").forEach(el => el.textContent = count);
+}
+
+function showToast(message){
+  let toast = document.querySelector(".toast");
+  if(!toast){
+    toast = document.createElement("div");
+    toast.className = "toast";
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.classList.add("show");
+  clearTimeout(window.__pearlToast);
+  window.__pearlToast = setTimeout(() => toast.classList.remove("show"), 2600);
+}
+
+function buildWhatsAppMessage(){
+  const lines = ["Bonjour PEARL, je souhaite commander :",""];
+  cartDetails().forEach(item => {
+    lines.push(`• ${item.product.name} — ${item.quantity} × ${formatPrice(item.product.price)}`);
+    lines.push(`  Taille : ${item.size} | Couleur : ${item.color}`);
+  });
+  lines.push("",`Total : ${formatPrice(cartSubtotal())}`);
+  lines.push("","Merci de me confirmer la disponibilité.");
+  return encodeURIComponent(lines.join("\n"));
+}
+
+function renderCart(){
+  const list = document.querySelector("[data-cart-items]");
+  const summary = document.querySelector("[data-cart-summary]");
+  if(!list || !summary) return;
+
+  const items = cartDetails();
+
+  if(!items.length){
+    list.innerHTML = `
+      <div class="empty-state">
+        <span class="eyebrow">Votre sélection</span>
+        <h2>Votre panier est vide.</h2>
+        <p>Découvrez les pièces PEARL et composez votre silhouette.</p>
+        <a class="btn btn-dark" href="boutique.html">Découvrir la boutique</a>
+      </div>`;
+    summary.innerHTML = "";
+    return;
+  }
+
+  list.innerHTML = items.map(item => `
+    <article class="cart-item">
+      <a class="cart-thumb" href="produit.html?id=${item.id}">
+        <img src="${item.product.image}" alt="${item.product.name}">
+      </a>
+      <div class="cart-item-main">
+        <div class="eyebrow">${item.product.category}</div>
+        <h3>${item.product.name}</h3>
+        <p>Taille ${item.size} · ${item.color}</p>
+        <strong>${formatPrice(item.product.price)}</strong>
+      </div>
+      <div class="qty">
+        <button type="button" data-minus="${item.key}" aria-label="Diminuer">−</button>
+        <span>${item.quantity}</span>
+        <button type="button" data-plus="${item.key}" aria-label="Augmenter">+</button>
+      </div>
+      <button class="remove" type="button" data-remove="${item.key}">Supprimer</button>
+    </article>
+  `).join("");
+
+  summary.innerHTML = `
+    <div class="summary-card">
+      <div class="eyebrow">Résumé</div>
+      <h2>Votre commande</h2>
+      <div class="summary-line"><span>Sous-total</span><strong>${formatPrice(cartSubtotal())}</strong></div>
+      <div class="summary-note">Livraison et modalités de paiement confirmées avec PEARL avant validation.</div>
+      <a class="btn btn-gold btn-full" href="https://wa.me/?text=${buildWhatsAppMessage()}" target="_blank" rel="noopener">Commander sur WhatsApp</a>
+      <a class="text-link" href="boutique.html">Continuer mes achats →</a>
+    </div>`;
+
+  list.querySelectorAll("[data-minus]").forEach(btn => btn.onclick = () => changeQuantity(btn.dataset.minus,-1));
+  list.querySelectorAll("[data-plus]").forEach(btn => btn.onclick = () => changeQuantity(btn.dataset.plus,1));
+  list.querySelectorAll("[data-remove]").forEach(btn => btn.onclick = () => removeFromCart(btn.dataset.remove));
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  updateCartCount();
+  renderCart();
+});
