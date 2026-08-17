@@ -59,7 +59,7 @@
 
     .admin-form {
       display: grid;
-      gap: 16px;
+      gap: 18px;
     }
 
     .admin-form label {
@@ -68,13 +68,20 @@
       margin-bottom: 7px;
     }
 
-    .admin-form input {
+    .admin-form input,
+    .admin-form textarea,
+    .admin-form select {
       width: 100%;
       box-sizing: border-box;
       padding: 14px;
       border: 1px solid #ccc;
       background: #fff;
       font: inherit;
+    }
+
+    .admin-form textarea {
+      min-height: 120px;
+      resize: vertical;
     }
 
     .admin-form button {
@@ -153,6 +160,32 @@
       flex-wrap: wrap;
     }
 
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .form-full {
+      grid-column: 1 / -1;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .checkbox-row input {
+      width: auto;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
     .hidden {
       display: none !important;
     }
@@ -164,6 +197,14 @@
 
       .admin-card {
         padding: 20px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-full {
+        grid-column: auto;
       }
 
       .admin-product {
@@ -217,6 +258,7 @@
 
     </div>
   </header>
+
 
   <main class="admin-page">
 
@@ -321,11 +363,224 @@
         </div>
 
 
-        <div class="admin-card">
+        <!-- FORMULAIRE AJOUT PRODUIT -->
+
+        <section
+          id="product-form-card"
+          class="admin-card hidden"
+        >
 
           <div class="admin-toolbar">
 
             <div>
+              <div class="eyebrow">
+                Catalogue
+              </div>
+
+              <h2>
+                Ajouter un produit
+              </h2>
+
+              <p>
+                Créez une nouvelle pièce dans le catalogue Pearl Bénin.
+              </p>
+            </div>
+
+          </div>
+
+
+          <form
+            id="product-form"
+            class="admin-form"
+          >
+
+            <div class="form-grid">
+
+              <div>
+                <label for="product-name">
+                  Nom du produit
+                </label>
+
+                <input
+                  id="product-name"
+                  type="text"
+                  placeholder="Ex : Robe Sélène"
+                  required
+                >
+              </div>
+
+
+              <div>
+                <label for="product-category">
+                  Catégorie
+                </label>
+
+                <select
+                  id="product-category"
+                  required
+                >
+                  <option value="Femme">
+                    Femme
+                  </option>
+
+                  <option value="Homme">
+                    Homme
+                  </option>
+
+                  <option value="Accessoires">
+                    Accessoires
+                  </option>
+                </select>
+              </div>
+
+
+              <div>
+                <label for="product-price">
+                  Prix — FCFA
+                </label>
+
+                <input
+                  id="product-price"
+                  type="number"
+                  min="0"
+                  step="1"
+                  placeholder="85000"
+                  required
+                >
+              </div>
+
+
+              <div>
+                <label for="product-stock">
+                  Stock
+                </label>
+
+                <input
+                  id="product-stock"
+                  type="number"
+                  min="0"
+                  step="1"
+                  placeholder="10"
+                  required
+                >
+              </div>
+
+
+              <div class="form-full">
+
+                <label for="product-description">
+                  Description
+                </label>
+
+                <textarea
+                  id="product-description"
+                  placeholder="Décrivez le produit..."
+                  required
+                ></textarea>
+
+              </div>
+
+
+              <div class="form-full">
+
+                <label for="product-image">
+                  URL de l'image
+                </label>
+
+                <input
+                  id="product-image"
+                  type="url"
+                  placeholder="https://..."
+                >
+
+              </div>
+
+
+              <div>
+
+                <label for="product-sizes">
+                  Tailles
+                </label>
+
+                <input
+                  id="product-sizes"
+                  type="text"
+                  placeholder="S, M, L, XL"
+                >
+
+              </div>
+
+
+              <div>
+
+                <label for="product-colors">
+                  Couleurs
+                </label>
+
+                <input
+                  id="product-colors"
+                  type="text"
+                  placeholder="Noir, Ivoire"
+                >
+
+              </div>
+
+
+              <div class="form-full checkbox-row">
+
+                <input
+                  id="product-active"
+                  type="checkbox"
+                  checked
+                >
+
+                <label for="product-active">
+                  Produit visible dans la boutique
+                </label>
+
+              </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+              <button
+                class="btn btn-dark"
+                type="submit"
+              >
+                Enregistrer le produit
+              </button>
+
+              <button
+                id="cancel-product-button"
+                class="btn btn-ghost"
+                type="button"
+              >
+                Annuler
+              </button>
+
+            </div>
+
+          </form>
+
+
+          <div
+            id="product-message"
+            class="admin-message"
+          ></div>
+
+        </section>
+
+
+        <!-- LISTE PRODUITS -->
+
+        <section class="admin-card">
+
+          <div class="admin-toolbar">
+
+            <div>
+
               <h2>
                 Produits
               </h2>
@@ -333,6 +588,7 @@
               <p>
                 Catalogue actuellement enregistré dans Firebase.
               </p>
+
             </div>
 
             <button
@@ -345,6 +601,7 @@
 
           </div>
 
+
           <div
             id="products-list"
             class="admin-products"
@@ -352,7 +609,7 @@
             Chargement des produits...
           </div>
 
-        </div>
+        </section>
 
       </section>
 
@@ -366,6 +623,7 @@
     <div class="container footer">
 
       <div>
+
         <div class="logo">
           PEARL<span>.</span>
         </div>
@@ -374,6 +632,7 @@
           Maison de mode africaine contemporaine.
           L'élégance africaine réinventée.
         </p>
+
       </div>
 
     </div>
@@ -392,15 +651,19 @@
       db
     } from "./firebase-config.js";
 
+
     import {
       signInWithEmailAndPassword,
       onAuthStateChanged,
       signOut
     } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
+
     import {
       collection,
-      getDocs
+      getDocs,
+      addDoc,
+      serverTimestamp
     } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 
@@ -426,12 +689,36 @@
     const productsList =
       document.querySelector("#products-list");
 
+    const addProductButton =
+      document.querySelector("#add-product-button");
 
-    function showLoginMessage(message) {
+    const productFormCard =
+      document.querySelector("#product-form-card");
 
-      loginMessage.textContent = message;
+    const productForm =
+      document.querySelector("#product-form");
 
-      loginMessage.classList.add("show");
+    const cancelProductButton =
+      document.querySelector("#cancel-product-button");
+
+    const productMessage =
+      document.querySelector("#product-message");
+
+
+    function showMessage(element, message) {
+
+      element.textContent = message;
+
+      element.classList.add("show");
+
+    }
+
+
+    function hideMessage(element) {
+
+      element.textContent = "";
+
+      element.classList.remove("show");
 
     }
 
@@ -471,7 +758,7 @@
 
         try {
 
-          loginMessage.classList.remove("show");
+          hideMessage(loginMessage);
 
           const result =
             await signInWithEmailAndPassword(
@@ -485,7 +772,8 @@
 
             await signOut(auth);
 
-            showLoginMessage(
+            showMessage(
+              loginMessage,
               "Ce compte n'est pas autorisé à accéder à l'administration."
             );
 
@@ -494,15 +782,20 @@
           }
 
           showDashboard();
-} catch (error) {
 
-  console.error("ERREUR FIREBASE :", error);
+        } catch (error) {
 
-  showLoginMessage(
-    `Erreur Firebase : ${error.code || "inconnue"}`
-  );
+          console.error(
+            "ERREUR FIREBASE :",
+            error
+          );
 
-}
+          showMessage(
+            loginMessage,
+            `Erreur Firebase : ${error.code || "inconnue"}`
+          );
+
+        }
 
       }
     );
@@ -518,6 +811,226 @@
     );
 
 
+    addProductButton.addEventListener(
+      "click",
+      () => {
+
+        hideMessage(productMessage);
+
+        productForm.reset();
+
+        document.querySelector(
+          "#product-active"
+        ).checked = true;
+
+        productFormCard.classList.remove(
+          "hidden"
+        );
+
+        productFormCard.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+
+      }
+    );
+
+
+    cancelProductButton.addEventListener(
+      "click",
+      () => {
+
+        productForm.reset();
+
+        productFormCard.classList.add(
+          "hidden"
+        );
+
+      }
+    );
+
+
+    productForm.addEventListener(
+      "submit",
+      async event => {
+
+        event.preventDefault();
+
+        hideMessage(productMessage);
+
+
+        const name =
+          document.querySelector(
+            "#product-name"
+          ).value.trim();
+
+
+        const category =
+          document.querySelector(
+            "#product-category"
+          ).value;
+
+
+        const price =
+          Number(
+            document.querySelector(
+              "#product-price"
+            ).value
+          );
+
+
+        const stock =
+          Number(
+            document.querySelector(
+              "#product-stock"
+            ).value
+          );
+
+
+        const description =
+          document.querySelector(
+            "#product-description"
+          ).value.trim();
+
+
+        const imageUrl =
+          document.querySelector(
+            "#product-image"
+          ).value.trim();
+
+
+        const sizes =
+          document.querySelector(
+            "#product-sizes"
+          ).value
+            .split(",")
+            .map(item => item.trim())
+            .filter(Boolean);
+
+
+        const colors =
+          document.querySelector(
+            "#product-colors"
+          ).value
+            .split(",")
+            .map(item => item.trim())
+            .filter(Boolean);
+
+
+        const active =
+          document.querySelector(
+            "#product-active"
+          ).checked;
+
+
+        if (!name) {
+
+          showMessage(
+            productMessage,
+            "Veuillez saisir le nom du produit."
+          );
+
+          return;
+
+        }
+
+
+        if (price < 0 || stock < 0) {
+
+          showMessage(
+            productMessage,
+            "Le prix et le stock doivent être positifs."
+          );
+
+          return;
+
+        }
+
+
+        const product = {
+
+          name,
+          category,
+          price,
+          stock,
+          description,
+          imageUrl,
+          sizes,
+          colors,
+          active,
+
+          createdAt:
+            serverTimestamp()
+
+        };
+
+
+        try {
+
+          const docRef =
+            await addDoc(
+              collection(
+                db,
+                "products"
+              ),
+              product
+            );
+
+
+          console.log(
+            "Produit créé :",
+            docRef.id
+          );
+
+
+          showMessage(
+            productMessage,
+            "Produit enregistré avec succès."
+          );
+
+
+          productForm.reset();
+
+
+          document.querySelector(
+            "#product-active"
+          ).checked = true;
+
+
+          await loadProducts();
+
+
+          setTimeout(
+            () => {
+
+              productFormCard.classList.add(
+                "hidden"
+              );
+
+            },
+            1200
+          );
+
+
+        } catch (error) {
+
+          console.error(
+            "Erreur lors de la création du produit :",
+            error
+          );
+
+
+          showMessage(
+            productMessage,
+            `Erreur Firebase : ${error.code || error.message}`
+          );
+
+        }
+
+      }
+    );
+
+
     async function loadProducts() {
 
       productsList.innerHTML =
@@ -528,7 +1041,10 @@
 
         const snapshot =
           await getDocs(
-            collection(db, "products")
+            collection(
+              db,
+              "products"
+            )
           );
 
 
@@ -548,6 +1064,7 @@
 
               const product =
                 doc.data();
+
 
               const price =
                 new Intl.NumberFormat(
@@ -608,11 +1125,16 @@
 
       } catch (error) {
 
-        console.error(error);
+        console.error(
+          "Erreur de chargement :",
+          error
+        );
+
 
         productsList.innerHTML = `
           <p>
-            Impossible de charger les produits.
+            Erreur Firebase :
+            ${error.code || error.message}
           </p>
         `;
 
