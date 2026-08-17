@@ -494,16 +494,15 @@
           }
 
           showDashboard();
+} catch (error) {
 
-        } catch (error) {
+  console.error("ERREUR FIREBASE :", error);
 
-          console.error(error);
+  showLoginMessage(
+    `Erreur Firebase : ${error.code || "inconnue"}`
+  );
 
-          showLoginMessage(
-            "Connexion impossible. Vérifiez votre adresse e-mail et votre mot de passe."
-          );
-
-        }
+}
 
       }
     );
