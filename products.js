@@ -137,3 +137,4 @@ function getProduct(id) {
 function formatPrice(price) {
   return new Intl.NumberFormat("fr-FR").format(price) + " FCFA";
 }
+window.PEARL_PRODUCTS = PEARL_PRODUCTS;
