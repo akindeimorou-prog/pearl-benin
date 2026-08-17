@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <meta
+    name="description"
+    content="Administration — Pearl Bénin"
+  >
+
+  <meta
+    name="theme-color"
+    content="#171513"
+  >
+
+  <title>Administration — Pearl Bénin</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .admin-page {
+      min-height: 70vh;
+      padding: 70px 0;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .admin-header h1 {
+      margin: 0 0 8px;
+    }
+
+    .admin-header p {
+      margin: 0;
+      opacity: .7;
+    }
+
+    .admin-card {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.08);
+      padding: 30px;
+      margin-bottom: 25px;
+    }
+
+    .admin-login {
+      max-width: 500px;
+      margin: 40px auto;
+    }
+
+    .admin-form {
+      display: grid;
+      gap: 16px;
+    }
+
+    .admin-form label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 7px;
+    }
+
+    .admin-form input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 14px;
+      border: 1px solid #ccc;
+      background: #fff;
+      font: inherit;
+    }
+
+    .admin-form button {
+      cursor: pointer;
+    }
+
+    .admin-message {
+      margin-top: 15px;
+      padding: 12px;
+      display: none;
+    }
+
+    .admin-message.show {
+      display: block;
+    }
+
+    .admin-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 25px;
+    }
+
+    .admin-products {
+      display: grid;
+      gap: 15px;
+    }
+
+    .admin-product {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 18px;
+      border: 1px solid rgba(0,0,0,.08);
+      background: #fff;
+    }
+
+    .admin-product-image {
+      width: 80px;
+      height: 100px;
+      overflow: hidden;
+      background: #f4f1ec;
+      flex-shrink: 0;
+    }
+
+    .admin-product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .admin-product-info {
+      flex: 1;
+    }
+
+    .admin-product-info h3 {
+      margin: 0 0 6px;
+    }
+
+    .admin-product-info p {
+      margin: 4px 0;
+      opacity: .7;
+    }
+
+    .admin-status {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .admin-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 700px) {
+      .admin-page {
+        padding: 40px 0;
+      }
+
+      .admin-card {
+        padding: 20px;
+      }
+
+      .admin-product {
+        align-items: flex-start;
+      }
+
+      .admin-product-image {
+        width: 65px;
+        height: 85px;
+      }
+
+      .admin-actions {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    PEARL BÉNIN · ADMINISTRATION
+  </div>
+
+  <header>
+    <div class="container nav">
+
+      <a
+        class="logo"
+        href="index.html"
+        aria-label="Pearl Bénin accueil"
+      >
+        PEARL<span>.</span>
+      </a>
+
+      <nav class="navlinks">
+        <a href="index.html">Accueil</a>
+        <a href="boutique.html">Boutique</a>
+        <a href="index.html#maison">La Maison</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a
+          class="icon-btn"
+          href="boutique.html"
+        >
+          Voir la boutique
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="admin-page">
+
+    <div class="container">
+
+      <!-- CONNEXION -->
+
+      <section
+        id="login-section"
+        class="admin-card admin-login"
+      >
+
+        <div class="eyebrow">
+          PEARL BÉNIN
+        </div>
+
+        <h1>Administration</h1>
+
+        <p>
+          Connectez-vous pour gérer votre boutique.
+        </p>
+
+        <form
+          id="login-form"
+          class="admin-form"
+        >
+
+          <div>
+            <label for="email">
+              Adresse e-mail
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              autocomplete="email"
+              required
+            >
+          </div>
+
+          <div>
+            <label for="password">
+              Mot de passe
+            </label>
+
+            <input
+              id="password"
+              type="password"
+              autocomplete="current-password"
+              required
+            >
+          </div>
+
+          <button
+            class="btn btn-dark btn-full"
+            type="submit"
+          >
+            Se connecter
+          </button>
+
+        </form>
+
+        <div
+          id="login-message"
+          class="admin-message"
+        ></div>
+
+      </section>
+
+
+      <!-- DASHBOARD -->
+
+      <section
+        id="dashboard-section"
+        class="hidden"
+      >
+
+        <div class="admin-header">
+
+          <div>
+            <div class="eyebrow">
+              PEARL BÉNIN
+            </div>
+
+            <h1>
+              Tableau de bord
+            </h1>
+
+            <p>
+              Gérez votre catalogue produits.
+            </p>
+          </div>
+
+          <button
+            id="logout-button"
+            class="btn btn-ghost"
+            type="button"
+          >
+            Se déconnecter
+          </button>
+
+        </div>
+
+
+        <div class="admin-card">
+
+          <div class="admin-toolbar">
+
+            <div>
+              <h2>
+                Produits
+              </h2>
+
+              <p>
+                Catalogue actuellement enregistré dans Firebase.
+              </p>
+            </div>
+
+            <button
+              id="add-product-button"
+              class="btn btn-dark"
+              type="button"
+            >
+              + Ajouter un produit
+            </button>
+
+          </div>
+
+          <div
+            id="products-list"
+            class="admin-products"
+          >
+            Chargement des produits...
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <footer>
+
+    <div class="container footer">
+
+      <div>
+        <div class="logo">
+          PEARL<span>.</span>
+        </div>
+
+        <p>
+          Maison de mode africaine contemporaine.
+          L'élégance africaine réinventée.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="container footer-bottom">
+      ©️ 2026 PEARL BÉNIN. Tous droits réservés.
+    </div>
+
+  </footer>
+
+
+  <script type="module">
+
+    import {
+      auth,
+      db
+    } from "./firebase-config.js";
+
+    import {
+      signInWithEmailAndPassword,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+    import {
+      collection,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+
+    const ADMIN_UID =
+      "I7GL4PeSgUYD4JByl6iGnnXeuRF3";
+
+
+    const loginSection =
+      document.querySelector("#login-section");
+
+    const dashboardSection =
+      document.querySelector("#dashboard-section");
+
+    const loginForm =
+      document.querySelector("#login-form");
+
+    const loginMessage =
+      document.querySelector("#login-message");
+
+    const logoutButton =
+      document.querySelector("#logout-button");
+
+    const productsList =
+      document.querySelector("#products-list");
+
+
+    function showLoginMessage(message) {
+
+      loginMessage.textContent = message;
+
+      loginMessage.classList.add("show");
+
+    }
+
+
+    function showDashboard() {
+
+      loginSection.classList.add("hidden");
+
+      dashboardSection.classList.remove("hidden");
+
+      loadProducts();
+
+    }
+
+
+    function showLogin() {
+
+      dashboardSection.classList.add("hidden");
+
+      loginSection.classList.remove("hidden");
+
+    }
+
+
+    loginForm.addEventListener(
+      "submit",
+      async event => {
+
+        event.preventDefault();
+
+        const email =
+          document.querySelector("#email").value.trim();
+
+        const password =
+          document.querySelector("#password").value;
+
+
+        try {
+
+          loginMessage.classList.remove("show");
+
+          const result =
+            await signInWithEmailAndPassword(
+              auth,
+              email,
+              password
+            );
+
+
+          if (result.user.uid !== ADMIN_UID) {
+
+            await signOut(auth);
+
+            showLoginMessage(
+              "Ce compte n'est pas autorisé à accéder à l'administration."
+            );
+
+            return;
+
+          }
+
+          showDashboard();
+
+        } catch (error) {
+
+          console.error(error);
+
+          showLoginMessage(
+            "Connexion impossible. Vérifiez votre adresse e-mail et votre mot de passe."
+          );
+
+        }
+
+      }
+    );
+
+
+    logoutButton.addEventListener(
+      "click",
+      async () => {
+
+        await signOut(auth);
+
+      }
+    );
+
+
+    async function loadProducts() {
+
+      productsList.innerHTML =
+        "Chargement des produits...";
+
+
+      try {
+
+        const snapshot =
+          await getDocs(
+            collection(db, "products")
+          );
+
+
+        if (snapshot.empty) {
+
+          productsList.innerHTML =
+            "<p>Aucun produit enregistré.</p>";
+
+          return;
+
+        }
+
+
+        productsList.innerHTML =
+          snapshot.docs
+            .map(doc => {
+
+              const product =
+                doc.data();
+
+              const price =
+                new Intl.NumberFormat(
+                  "fr-FR"
+                ).format(
+                  product.price || 0
+                );
+
+
+              return `
+
+                <article class="admin-product">
+
+                  <div class="admin-product-image">
+
+                    ${
+                      product.imageUrl
+                        ? `
+                          <img
+                            src="${product.imageUrl}"
+                            alt="${product.name || "Produit"}"
+                          >
+                        `
+                        : ""
+                    }
+
+                  </div>
+
+
+                  <div class="admin-product-info">
+
+                    <div class="admin-status">
+                      ${product.category || "Sans catégorie"}
+                    </div>
+
+                    <h3>
+                      ${product.name || "Produit sans nom"}
+                    </h3>
+
+                    <p>
+                      ${price} FCFA
+                    </p>
+
+                    <p>
+                      Stock :
+                      ${product.stock ?? 0}
+                    </p>
+
+                  </div>
+
+                </article>
+
+              `;
+
+            })
+            .join("");
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        productsList.innerHTML = `
+          <p>
+            Impossible de charger les produits.
+          </p>
+        `;
+
+      }
+
+    }
+
+
+    onAuthStateChanged(
+      auth,
+      user => {
+
+        if (
+          user &&
+          user.uid === ADMIN_UID
+        ) {
+
+          showDashboard();
+
+        } else {
+
+          showLogin();
+
+        }
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
